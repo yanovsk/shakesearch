@@ -2,25 +2,46 @@
 import React, { Component } from "react";
 import "./App.css";
 import { connect, sendMsg } from "./api";
+import bg from "./assets/bg.png";
+import frame from "./assets/frame.png";
+import logo from "./assets/logo.png";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    connect();
-  }
+const App = () => {
+  connect();
 
-  send() {
+  const send = () => {
     console.log("hello");
     sendMsg("hello");
-  }
+  };
 
-  render() {
-    return (
-      <div className="App">
-        <button onClick={this.send}>Welcome to ShakeSearch</button>
+  return (
+    <div>
+      <div className="top-picture">
+        <img src={logo} />
+        <p>WILLIAM</p>
       </div>
-    );
-  }
-}
+      <div className="character_selection">
+        <div className="character">
+          <img src={frame} />
+          <button className="talk-to-button" onClick={send()}>
+            Talk to William Shakespeare
+          </button>
+        </div>
+        <div className="character">
+          <img src={frame} />
+          <button className="talk-to-button" onClick={send()}>
+            Talk to Hamlet
+          </button>
+        </div>
+        <div className="character">
+          <img src={frame} />
+          <button className="talk-to-button" onClick={send()}>
+            Talk to Romeo And Juliet
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default App;
