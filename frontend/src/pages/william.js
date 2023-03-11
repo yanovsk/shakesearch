@@ -6,26 +6,23 @@ import chat_frame from "../assets/frame_chat.png";
 
 var socket = new WebSocket("ws://localhost:8080/ws");
 const William = () => {
-  const [message, setMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    socket.onopen = () => {
-      setMessage("Connected");
-    };
+    socket.onopen = () => {};
 
     socket.onmessage = (e) => {
       setLoading(false);
-      setMessages(e.data);
+
+      setMessage(JSON.parse(e.data));
     };
   }, []);
 
   const handleClick = useCallback(
     (e) => {
       e.preventDefault();
-      setMessages(inputValue);
       socket.send(
         JSON.stringify({
           message: "Imagine that you are William Shakespeare " + inputValue,
@@ -49,7 +46,11 @@ const William = () => {
       <div className="right-side">
         <div className="chat" style={{ backgroundImage: `url(${chat_frame})` }}>
           <div className="text-output">
-            <text>{messages}</text>
+            <td>
+              {message.split("\n").map((paragraph) => (
+                <p> {paragraph} </p>
+              ))}
+            </td>
             <p>{isLoading ? "loading..." : ""}</p>
           </div>
         </div>

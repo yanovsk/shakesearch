@@ -9,6 +9,7 @@
     "mui": "^0.0.1",
     "react-animated-text": "^0.1.4",
     "react-animated-text-content": "^1.0.1",
+    "react-chat-elements": "^12.0.8",
     "react-router-dom": "^6.9.0",
     "sort-by": "^1.2.0",
     "styled-components": "^5.3.8"
