@@ -1,73 +1,81 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "net/http"
-
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"net/http"
     "github.com/gorilla/websocket"
+    "log"
+    "errors"
+    "context"
+	"fmt"
+	openai "github.com/sashabaranov/go-openai"
+
 )
+var upgrader = websocket.Upgrader{}
 
-// We'll need to define an Upgrader
-// this will require a Read and Write buffer size
-var upgrader = websocket.Upgrader{
-    ReadBufferSize:  1024,
-  WriteBufferSize: 1024,
+type Message struct {
+    Message string `json:"message"`
+ }
 
-  // We'll need to check the origin of our connection
-  // this will allow us to make requests from our React
-  // development server to here.
-  // For now, we'll do no checking and just allow any connection
-  CheckOrigin: func(r *http.Request) bool { return true },
-}
-
-// define a reader which will listen for
-// new messages being sent to our WebSocket
-// endpoint
-func reader(conn *websocket.Conn) {
-    for {
-    // read in a message
-        messageType, p, err := conn.ReadMessage()
-       if err != nil {
-            log.Println(err)
-            return
-        }
-    // print out that message for clarity
-        fmt.Println(string(p))
-
-        if err := conn.WriteMessage(messageType, p); err != nil {
-            log.Println(err)
-            return
-        }
-
-    }
-}
-
-// define our WebSocket endpoint
-func serveWs(w http.ResponseWriter, r *http.Request) {
-    fmt.Println(r.Host)
-
-  // upgrade this connection to a WebSocket
-  // connection
-    ws, err := upgrader.Upgrade(w, r, nil)
-    if err != nil {
-        log.Println(err)
-  }
-  // listen indefinitely for new messages coming
-  // through on our WebSocket connection
-    reader(ws)
-}
-
-func setupRoutes() {
-  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(w, "Simple sss")
-  })
-  // mape our `/ws` endpoint to the `serveWs` function
-    http.HandleFunc("/ws", serveWs)
-}
 
 func main() {
-    fmt.Println("Chat App v0.01")
-    setupRoutes()
-    http.ListenAndServe(":8080", nil)
-} 
+    client := openai.NewClient("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")
+
+	e := echo.New()
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
+
+	e.GET("/ws", func(c echo.Context) error {
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
+		ws, err := upgrader.Upgrade(c.Response().Writer, c.Request(), nil)
+		if !errors.Is(err, nil) {
+			log.Println(err)
+		}
+		defer ws.Close()
+
+		log.Println("Connected!")
+
+		for {
+			var message Message
+			err := ws.ReadJSON(&message)
+			if !errors.Is(err, nil) {
+				log.Printf("error occurred: %v", err)
+				break
+			}
+			log.Println(message)
+
+            resp, err := client.CreateChatCompletion(
+                context.Background(),
+                openai.ChatCompletionRequest{
+                    Model: openai.GPT3Dot5Turbo,
+                    Messages: []openai.ChatCompletionMessage{
+                        {
+                            Role:    openai.ChatMessageRoleUser,
+                            Content: message.Message,
+                        },
+                    },
+                },
+            )
+            
+            if err != nil {
+                fmt.Printf("ChatCompletion error: %v\n", err)
+            }
+        
+            fmt.Println(resp.Choices[0].Message.Content)
+    
+			if err := ws.WriteJSON(resp.Choices[0].Message.Content); !errors.Is(err, nil) {
+				log.Printf("error occurred: %v", err)
+			}
+		}
+
+		return nil
+	})
+	e.Logger.Fatal(e.Start(":8080"))
+}
