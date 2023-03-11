@@ -13,7 +13,7 @@
   flex-direction: column;
 }
 .wrapper {
-  height: 100vh; /* Magic here */
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,27 +40,38 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 40vh; /* Magic here */
+  height: 40vh;
   justify-content: center;
   gap: 10vh;
 }
 
 .character-talk-wrapper {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  justify-content: center;
+}
+
+.chat-and-pic {
+  display: flex;
   flex-direction: row;
   align-items: center;
-  height: 100vh; /* Magic here */
+  height: 100vh;
   justify-content: center;
   gap: 10vh;
 }
 
 .left-side {
   background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .chat {
   height: 534px;
-  background-color: #102555;
+  background-color: #0c1a3b;
   width: 738px;
   display: flex;
   flex-direction: column;
@@ -68,21 +79,43 @@
 }
 
 .text-output {
-  width: 50vh;
-  padding: 25px;
-  display: flex;
+  padding: 30px;
   color: white;
   font-family: "IM Fell English SC", serif;
   font-size: 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .prompt-box {
   display: flex;
-  flex-direction: row;
-  align-self: flex-end;
-  padding: 30px;
 }
 
 .input-field {
-  width: 40vh;
+  width: 600px;
+  padding: 10px;
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: white;
+  color: white;
+  font-family: "IM Fell English SC", serif;
+  font-size: 20px;
+  background-color: transparent;
+}
+
+.ask-btn {
+  padding: 10px;
+  color: white;
+  background-color: transparent;
+  font-family: "IM Fell English SC", serif;
+  border-color: white;
+  cursor: pointer;
+
+  font-size: 20px;
+}
+
+.text {
+  color: white;
+  font-family: "Mea Culpa", cursive;
+  font-size: 45px;
 }

@@ -37,9 +37,9 @@ const App = () => {
   return (
     <div>
       <div className="top-picture">
-        <img src={logo} />
-        <p>WILLIAM</p>
+        <img src={logo} style={{ width: 180, height: 100 }} />
       </div>
+      <br></br>
       <div className="character_selection">
         <div className="character">
           <img src={frame} />

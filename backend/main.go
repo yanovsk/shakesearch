@@ -20,7 +20,7 @@ type Message struct {
 
 
 func main() {
-    client := openai.NewClient("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")
+    client := openai.NewClient("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")
 
 	e := echo.New()
 
