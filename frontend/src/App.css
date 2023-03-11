@@ -43,3 +43,41 @@
   justify-content: center;
   gap: 10vh;
 }
+
+.character-talk-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100vh; /* Magic here */
+  justify-content: center;
+  gap: 10vh;
+}
+
+.left-side {
+  background-color: transparent;
+}
+
+.chat {
+  height: 534px;
+  background-color: #102555;
+  width: 738px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.text-output {
+  display: flex;
+  align-self: flex-start;
+}
+
+.prompt-box {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  padding: 30px;
+}
+
+.input-field {
+  width: 40vh;
+}
