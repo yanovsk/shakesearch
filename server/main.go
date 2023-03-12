@@ -9,7 +9,7 @@ import (
     "errors"
     "context"
 	"fmt"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 	openai "github.com/sashabaranov/go-openai"
 
 )
@@ -20,26 +20,26 @@ type Message struct {
  }
 
  
- func viperEnvVariable(key string) string {
+//  func viperEnvVariable(key string) string {
 
-	viper.SetConfigFile(".env")
-	err := viper.ReadInConfig()
+// 	viper.SetConfigFile(".env")
+// 	err := viper.ReadInConfig()
   
-	if err != nil {
-	  log.Fatalf("Error while reading config file %s", err)
-	}
+// 	if err != nil {
+// 	  log.Fatalf("Error while reading config file %s", err)
+// 	}
 
-	value, ok := viper.Get(key).(string)
+// 	value, ok := viper.Get(key).(string)
 
-	if !ok {
-	  log.Fatalf("Invalid type assertion")
-	}
-	return value
-  }
+// 	if !ok {
+// 	  log.Fatalf("Invalid type assertion")
+// 	}
+// 	return value
+//   }
 
 
 func main() {
-    client := openai.NewClient(viperEnvVariable("OPEN_AI_KEY"))
+    client := openai.NewClient("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")
 
 	e := echo.New()
 
