@@ -2,6 +2,7 @@
 FROM golang:latest AS builder
 ADD . /app
 WORKDIR /app/server
+RUN export GO111MODULE=on
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-w" -a -o /main .
 # Build the React application
