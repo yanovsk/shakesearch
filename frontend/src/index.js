@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import William from "./pages/william";
+import Hamlet from "./pages/hamlet";
+import RomeoAndJuliet from "./pages/romeoandjuliet";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -13,6 +16,14 @@ const router = createBrowserRouter([
   {
     path: "/william",
     element: <William />,
+  },
+  {
+    path: "/hamlet",
+    element: <Hamlet />,
+  },
+  {
+    path: "/romeoandjuliet",
+    element: <RomeoAndJuliet />,
   },
 ]);
 

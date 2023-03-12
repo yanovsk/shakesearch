@@ -1,17 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Mea+Culpa&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap");
 
-.App {
-  text-align: center;
-  background-color: #282c34;
-}
-
-.top-picture {
+.home-wrapper {
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
 }
+
 .wrapper {
   height: 100vh;
   display: flex;
@@ -19,12 +14,13 @@
   align-items: center;
   flex-direction: column;
 }
-
-.character {
+.description {
   display: flex;
-  flex-direction: column;
-  height: 300px;
-  width: 11%;
+  flex-direction: row;
+  font-family: "IM Fell English SC", serif;
+  text-align: center;
+  color: white;
+  width: 70%;
 }
 
 .talk-to-button {
@@ -40,9 +36,15 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 40vh;
   justify-content: center;
   gap: 10vh;
+}
+
+.character {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  width: 250px;
 }
 
 .character-talk-wrapper {
@@ -63,10 +65,9 @@
 }
 
 .left-side {
-  background-color: transparent;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-content: flex-end;
 }
 
 .chat {
@@ -118,4 +119,5 @@
   color: white;
   font-family: "Mea Culpa", cursive;
   font-size: 45px;
+  height: 10px;
 }

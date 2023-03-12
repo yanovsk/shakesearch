@@ -1,14 +1,15 @@
 // App.js
 
 import React, { useCallback, useEffect, useState } from "react";
-import frame from "../assets/frame.png";
-import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.svg";
 import WS from "../assets/WS.svg";
 import bg from "../assets/bg.png";
 
 import chat_frame from "../assets/frame_chat.png";
 
 var socket = new WebSocket("ws://localhost:8080/ws");
+
 const William = () => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -49,12 +50,14 @@ const William = () => {
         className="character-talk-wrapper"
         style={{ backgroundImage: `url(${bg})` }}
       >
-        <img src={logo} style={{ width: 180, height: 100 }} />
+        <a href="/">
+          <img src={logo} style={{ width: 230, height: 140 }} />
+        </a>
 
         <div className="chat-and-pic">
           <div className="left-side">
             <img src={WS} style={{ width: 578, height: 458 }}></img>
-            <p className="text"> Talking to William Shakespeare</p>
+            <p className="text"> A conversation with William Shakespeare</p>
           </div>
 
           <div className="right-side">
