@@ -8,8 +8,9 @@ import (
     "log"
     "errors"
     "context"
+	"github.com/joho/godotenv"
 	"fmt"
-	// "github.com/spf13/viper"
+	"os"
 	openai "github.com/sashabaranov/go-openai"
 
 )
@@ -19,32 +20,31 @@ type Message struct {
     Message string `json:"message"`
  }
 
- 
-//  func viperEnvVariable(key string) string {
 
-// 	viper.SetConfigFile(".env")
-// 	err := viper.ReadInConfig()
+func goDotEnvVariable(key string) string {
+	err := godotenv.Load(".env")
   
-// 	if err != nil {
-// 	  log.Fatalf("Error while reading config file %s", err)
-// 	}
-
-// 	value, ok := viper.Get(key).(string)
-
-// 	if !ok {
-// 	  log.Fatalf("Invalid type assertion")
-// 	}
-// 	return value
-//   }
-
+	if err != nil {
+	  log.Fatalf("Error loading .env file")
+	}
+  
+	return os.Getenv(key)
+  }
 
 func main() {
-    client := openai.NewClient("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")
+	openai_key := os.Getenv("OPEN_AI_KEY")
+    client := openai.NewClient(openai_key)
 
 	e := echo.New()
-
+	e.Use(middleware.Static("./build"))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	port := goDotEnvVariable("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
@@ -57,13 +57,12 @@ func main() {
 		if !errors.Is(err, nil) {
 			log.Println(err)
 		}
-		defer ws.Close()
-
-		log.Println("Connected!")
+		// defer ws.Close()
 
 		for {
 			var message Message
 			err := ws.ReadJSON(&message)
+
 			if !errors.Is(err, nil) {
 				log.Printf("error occurred: %v", err)
 				break
@@ -87,7 +86,7 @@ func main() {
                 fmt.Printf("ChatCompletion error: %v\n", err)
             }
         
-            fmt.Println(resp.Choices[0].Message.Content)
+            // fmt.Println(resp.Choices[0].Message.Content)
     
 			if err := ws.WriteJSON(resp.Choices[0].Message.Content); !errors.Is(err, nil) {
 				log.Printf("error occurred: %v", err)
@@ -96,5 +95,5 @@ func main() {
 
 		return nil
 	})
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":"+port))
 }
