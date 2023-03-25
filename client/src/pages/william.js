@@ -1,16 +1,15 @@
 // App.js
 
-import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.svg";
+import React, { useCallback, useEffect, useState, useContext } from "react";
+import logo from "../assets/logo.png";
 import WS from "../assets/WS.svg";
 import bg from "../assets/bg.png";
+import { SocketContext } from "../socket_context.js";
 
 import chat_frame from "../assets/frame_chat.png";
 
-var socket = new WebSocket("ws://localhost:8080/ws");
-
 const William = () => {
+  const socket = useContext(SocketContext);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -31,7 +30,7 @@ const William = () => {
       socket.send(
         JSON.stringify({
           message:
-            "Imagine that you are William Shakespeare. Answer the following question in 200 words or less: " +
+            "Imagine that you are William Shakespeare. Answer the following question (in 200 words or less) and don't day that you are AI model: " +
             inputValue,
         })
       );
@@ -51,12 +50,13 @@ const William = () => {
         style={{ backgroundImage: `url(${bg})` }}
       >
         <a href="/">
-          <img src={logo} style={{ width: 230, height: 140 }} />
+          <img src={logo} style={{ width: 155, height: 85 }} />
         </a>
+        <br />
 
         <div className="chat-and-pic">
           <div className="left-side">
-            <img src={WS} style={{ width: 578, height: 458 }}></img>
+            <img src={WS} style={{ width: 538, height: 428 }}></img>
             <p className="text"> A conversation with William Shakespeare</p>
           </div>
 
@@ -67,7 +67,15 @@ const William = () => {
             >
               <div className="text-output">{message}</div>
               <p className="text-output">
-                {isLoading ? "Great Question! Writing you an answer..." : ""}
+                {isLoading ? (
+                  <>
+                    <p className="writing-animation">
+                      "Great Question! Writing you an answer...{" "}
+                    </p>
+                  </>
+                ) : (
+                  ""
+                )}
               </p>
             </div>
             <br></br>

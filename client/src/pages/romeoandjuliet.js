@@ -1,11 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import logo from "../assets/logo.svg";
+import React, { useCallback, useEffect, useState, useContext } from "react";
+import logo from "../assets/logo.png";
 import bg from "../assets/bg.png";
 import rnadj from "../assets/randj.png";
 import chat_frame from "../assets/frame_chat.png";
+import { SocketContext } from "../socket_context.js";
 
-var socket = new WebSocket("ws://localhost:8080/ws");
 const Hamlet = () => {
+  const socket = useContext(SocketContext);
+
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -26,7 +28,7 @@ const Hamlet = () => {
       socket.send(
         JSON.stringify({
           message:
-            "Imagine that you are either Romeo or Juliet from William Shakespeare's play. Answer the following question only as either Romeo or Juliet (in 200 words or less): " +
+            "Imagine that you are either Romeo or Juliet from William Shakespeare's play. Answer the following question only as either Romeo or Juliet (in 200 words or less) and don't day that you are AI model: " +
             inputValue,
         })
       );
@@ -45,11 +47,14 @@ const Hamlet = () => {
         className="character-talk-wrapper"
         style={{ backgroundImage: `url(${bg})` }}
       >
-        <img src={logo} style={{ width: 230, height: 140 }} />
+        <a href="/">
+          <img src={logo} style={{ width: 155, height: 85 }} />
+        </a>
+        <br />
 
         <div className="chat-and-pic">
           <div className="left-side">
-            <img src={rnadj} style={{ width: 578, height: 458 }}></img>
+            <img src={rnadj} style={{ width: 538, height: 428 }}></img>
             <p className="text"> A conversation with Romeo and Juliet </p>
           </div>
 
@@ -60,7 +65,15 @@ const Hamlet = () => {
             >
               <div className="text-output">{message}</div>
               <p className="text-output">
-                {isLoading ? "Great Question! Writing you an answer..." : ""}
+                {isLoading ? (
+                  <>
+                    <p className="writing-animation">
+                      "Great Question! Writing you an answer...{" "}
+                    </p>
+                  </>
+                ) : (
+                  ""
+                )}
               </p>
             </div>
             <br></br>

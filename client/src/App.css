@@ -4,6 +4,7 @@
 .home-wrapper {
   display: flex;
   align-items: center;
+  height: 100vh;
   flex-direction: column;
 }
 
@@ -14,6 +15,37 @@
   align-items: center;
   flex-direction: column;
 }
+
+.writing-animation {
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 0.15em solid rgb(255, 255, 255); /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 0.15em; /* Adjust as needed */
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: rgb(255, 255, 255);
+  }
+}
+
 .description {
   display: flex;
   flex-direction: row;
@@ -28,7 +60,7 @@
   border: none;
   color: white;
   font-family: "Mea Culpa", cursive;
-  font-size: 36px;
+  font-size: 32px;
   cursor: pointer;
 }
 
@@ -43,8 +75,8 @@
 .character {
   display: flex;
   flex-direction: column;
-  height: 400px;
-  width: 250px;
+  height: 370px;
+  width: 230px;
 }
 
 .character-talk-wrapper {
@@ -59,9 +91,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 100vh;
   justify-content: center;
-  gap: 10vh;
+  gap: 20px;
 }
 
 .left-side {
@@ -71,16 +102,16 @@
 }
 
 .chat {
-  height: 534px;
+  height: 479px;
   background-color: #0c1a3b;
-  width: 738px;
+  width: 669px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
 .text-output {
-  padding: 30px;
+  padding: 26px;
   color: white;
   font-family: "IM Fell English SC", serif;
   font-size: 18px;
@@ -93,7 +124,7 @@
 }
 
 .input-field {
-  width: 600px;
+  width: 550px;
   padding: 10px;
   outline: 0;
   border-width: 0 0 2px;
