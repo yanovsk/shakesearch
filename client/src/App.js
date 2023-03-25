@@ -1,23 +1,29 @@
 //==========LIBRARIES===========//
 import React, { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
-
+import {
+  AppBar,
+  Box,
+  Card,
+  CardContent,
+  Container,
+  IconButton,
+  TextField,
+  Toolbar,
+  Typography,
+  Button,
+  makeStyles,
+} from "@material-ui/core";
 //==========COMPONENTS===========//
-import William from "./pages/william.js";
-import Hamlet from "./pages/hamlet.js";
-import Home from "./Home.js";
-import RomeoAndJuliet from "./pages/romeoandjuliet.js";
 
 import { SocketContext, socket } from "./socket_context.js";
+import Home from "./Home";
 
 const App = () => {
   return (
     <SocketContext.Provider value={socket}>
       <Routes>
         <Route index element={<Home />} />
-        <Route path="william" element={<William />} />
-        <Route path="hamlet" element={<Hamlet />} />
-        <Route path="romeoandjuliet" element={<RomeoAndJuliet />} />
       </Routes>
     </SocketContext.Provider>
   );

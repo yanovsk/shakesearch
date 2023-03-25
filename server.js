@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const OPENAI_API_KEY = "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";
+const OPENAI_API_KEY = "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";
 const PINECONE_API_KEY = "9df93080-ce48-466e-8608-0c9f964f6386";
 const INDEX_NAME = "shake";
 
