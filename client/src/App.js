@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -12,6 +12,7 @@ import "./App.css";
 import logo from "./assets/logo.png";
 import axios from "axios";
 import GetContext from "./GetContext";
+import ResultCard from "./ResultCard";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,6 +36,10 @@ function App() {
     await Promise.all([fetchResults(), fetchSummary()]);
     setSearchExecuted(true); // Set searchExecuted to true
     setIsLoading(false);
+  };
+
+  const handleCloseContext = () => {
+    setShowExplanation(false);
   };
 
   const fetchResults = async () => {
@@ -75,7 +80,6 @@ function App() {
       </Typography>
     ));
   }
-
   return (
     <div className="wrapper">
       <div>
@@ -113,46 +117,16 @@ function App() {
                 </CardContent>
               </Card>
 
-              {results.map((result, index) => (
-                <Card key={index} className="result-card">
-                  <CardContent>
-                    <Divider
-                      textAlign="left"
-                      style={{ fontSize: 14, color: "gray" }}
-                    >
-                      Title and Scene
-                    </Divider>
-
-                    <Typography variant="h6">{result.play_name}</Typography>
-                    <Typography variant="subtitle1">
-                      {result.act_scene}
-                    </Typography>
-                    <Divider
-                      textAlign="left"
-                      style={{ fontSize: 14, color: "gray" }}
-                    >
-                      Excerpt
-                    </Divider>
-                    {formatDialogue(result.dialogue_lines)}
-                    <Divider style={{ marginTop: 10 }} />
-
-                    <Button
-                      variant="outlined"
-                      className="#outlined-buttons"
-                      style={{ width: 150, height: 30, marginTop: 10 }}
-                      onClick={() =>
-                        handleExplainClick(
-                          result.play_name,
-                          result.act_scene,
-                          result.dialogue_lines
-                        )
-                      }
-                    >
-                      Get Context
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+              {results.map((result, index) => {
+                return (
+                  <ResultCard
+                    key={index}
+                    index={index}
+                    result={result}
+                    handleExplainClick={handleExplainClick}
+                  />
+                );
+              })}
             </div>
             <div>
               {showExplanation && (
@@ -163,6 +137,7 @@ function App() {
                       play_name={contextParams.play_name}
                       act_scene={contextParams.act_scene}
                       dialogue_lines={contextParams.dialogue_lines}
+                      handleClose={handleCloseContext} // Pass the handleClose function as a prop
                     />
                   </div>
                 </>
