@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-function GetContext() {
+function GetContext({ play_name, act_scene, dialogue_lines }) {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
 
@@ -22,11 +22,14 @@ function GetContext() {
     try {
       const response = await axios.post("http://localhost:5050/chat", {
         message: userInput,
+        play_name,
+        act_scene,
+        dialogue_lines,
       });
 
       setChatHistory((prevState) => [
         ...prevState,
-        { message: response.data.message, sender: "ai" },
+        { message: response.data.message, sender: "Assistant" },
       ]);
     } catch (err) {
       console.error(err);

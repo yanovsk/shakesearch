@@ -3,21 +3,20 @@ const cors = require("cors");
 const axios = require("axios");
 const { PineconeClient } = require("@pinecone-database/pinecone");
 const pinecone = new PineconeClient();
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const OPENAI_API_KEY = "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";
-const PINECONE_API_KEY = "9df93080-ce48-466e-8608-0c9f964f6386";
 const INDEX_NAME = "shake";
 
 pinecone.init({
-  apiKey: PINECONE_API_KEY,
+  apiKey: process.env.PINECONE_API_KEY,
   environment: "us-west4-gcp",
 });
 
-axios.defaults.headers.common["x-api-key"] = PINECONE_API_KEY;
+axios.defaults.headers.common["x-api-key"] = process.env.PINECONE_API_KEY;
 
 app.post("/search", async (req, res) => {
   const query_text = req.body.query;
@@ -33,7 +32,7 @@ app.post("/search", async (req, res) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
       }
     )
