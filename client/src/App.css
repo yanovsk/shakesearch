@@ -47,6 +47,9 @@
   gap: 9px;
 }
 
+.cards {
+  width: 50vh;
+}
 .result-card {
   margin-bottom: 16px;
 }

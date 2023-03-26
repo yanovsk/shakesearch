@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Card,
   CardContent,
-  Container,
+  LinearProgress,
   TextField,
   Typography,
   Button,
@@ -17,6 +17,9 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [summary, setSummary] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchExecuted, setSearchExecuted] = useState(false);
 
   const [contextParams, setContextParams] = useState({
     play_name: "",
@@ -26,6 +29,15 @@ function App() {
 
   const handleSearch = async () => {
     setShowExplanation(false);
+    setIsLoading(true);
+
+    // Await the results of both fetchResults and fetchSummary
+    await Promise.all([fetchResults(), fetchSummary()]);
+    setSearchExecuted(true); // Set searchExecuted to true
+    setIsLoading(false);
+  };
+
+  const fetchResults = async () => {
     const response = await fetch("http://localhost:5050/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,6 +45,18 @@ function App() {
     });
     const data = await response.json();
     setResults(data);
+  };
+
+  const fetchSummary = async () => {
+    try {
+      const response = await axios.post("http://localhost:5050/get-summary", {
+        query: searchQuery,
+      });
+
+      setSummary(response.data.summary);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleExplainClick = async (play_name, act_scene, dialogue_lines) => {
@@ -72,64 +96,80 @@ function App() {
           </div>
           <br />
         </div>
-        <div className="card-and-expl">
-          <div className="card">
-            {results.map((result, index) => (
-              <Card key={index} className="result-card">
+        {isLoading && <LinearProgress />}
+
+        {!isLoading && searchExecuted && (
+          <div className="card-and-expl">
+            <div className="cards">
+              <Card className="result-card">
                 <CardContent>
                   <Divider
                     textAlign="left"
                     style={{ fontSize: 14, color: "gray" }}
                   >
-                    Title and Scene
+                    Summary
                   </Divider>
-
-                  <Typography variant="h6">{result.play_name}</Typography>
-                  <Typography variant="subtitle1">
-                    {result.act_scene}
-                  </Typography>
-                  <Divider
-                    textAlign="left"
-                    style={{ fontSize: 14, color: "gray" }}
-                  >
-                    Excerpt
-                  </Divider>
-                  {formatDialogue(result.dialogue_lines)}
-                  <Divider style={{ marginTop: 10 }} />
-
-                  <Button
-                    variant="outlined"
-                    className="#outlined-buttons"
-                    style={{ width: 150, height: 30, marginTop: 10 }}
-                    onClick={() =>
-                      handleExplainClick(
-                        result.play_name,
-                        result.act_scene,
-                        result.dialogue_lines
-                      )
-                    }
-                  >
-                    Get Context
-                  </Button>
+                  <Typography variant="body1">{summary}</Typography>
                 </CardContent>
               </Card>
-            ))}
+
+              {results.map((result, index) => (
+                <Card key={index} className="result-card">
+                  <CardContent>
+                    <Divider
+                      textAlign="left"
+                      style={{ fontSize: 14, color: "gray" }}
+                    >
+                      Title and Scene
+                    </Divider>
+
+                    <Typography variant="h6">{result.play_name}</Typography>
+                    <Typography variant="subtitle1">
+                      {result.act_scene}
+                    </Typography>
+                    <Divider
+                      textAlign="left"
+                      style={{ fontSize: 14, color: "gray" }}
+                    >
+                      Excerpt
+                    </Divider>
+                    {formatDialogue(result.dialogue_lines)}
+                    <Divider style={{ marginTop: 10 }} />
+
+                    <Button
+                      variant="outlined"
+                      className="#outlined-buttons"
+                      style={{ width: 150, height: 30, marginTop: 10 }}
+                      onClick={() =>
+                        handleExplainClick(
+                          result.play_name,
+                          result.act_scene,
+                          result.dialogue_lines
+                        )
+                      }
+                    >
+                      Get Context
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div>
+              {showExplanation && (
+                <>
+                  <div className="context">
+                    <GetContext
+                      key={`${contextParams.play_name}-${contextParams.act_scene}-${contextParams.dialogue_lines}`}
+                      play_name={contextParams.play_name}
+                      act_scene={contextParams.act_scene}
+                      dialogue_lines={contextParams.dialogue_lines}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-          <div>
-            {showExplanation && (
-              <>
-                <div className="context">
-                  <GetContext
-                    key={`${contextParams.play_name}-${contextParams.act_scene}-${contextParams.dialogue_lines}`}
-                    play_name={contextParams.play_name}
-                    act_scene={contextParams.act_scene}
-                    dialogue_lines={contextParams.dialogue_lines}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

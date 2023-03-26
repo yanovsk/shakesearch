@@ -73,5 +73,17 @@ app.post("/get-context", async (req, res) => {
   res.json(completion.data.choices[0].message);
 });
 
+app.post("/get-summary", async (req, res) => {
+  const { query } = req.body;
+  const summary_prompt = `Provide a short summary about the search results related to "${query}" in Shakespeare's plays.`;
+
+  const completion = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: summary_prompt }],
+  });
+
+  res.json({ summary: completion.data.choices[0].message.content });
+});
+
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
