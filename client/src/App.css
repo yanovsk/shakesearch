@@ -29,12 +29,10 @@
   justify-content: center;
 }
 .context {
-  flex-basis: 10%;
   position: -webkit-sticky; /* Safari */
   position: sticky;
-  top: 0;
+  top: 20px;
   margin-left: 20px;
-  margin-top: 20px;
 }
 .search-wrapper {
   flex-basis: 100vh;
@@ -65,36 +63,29 @@
 /* src/App.css */
 .GetContext {
   font-family: sans-serif;
-  text-align: center;
-  max-width: 600px;
   margin: 0 auto;
+  width: 70vh;
+  height: 60vh;
+}
+
+.chat-and-input {
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-container {
-  max-height: 500px;
   overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.chat-message {
-  margin-bottom: 0.5rem;
-}
-
-.chat-message.user {
-  text-align: left;
-  color: blue;
-}
-
-.chat-message.ai {
-  text-align: left;
-  color: green;
+  height: 52vh;
+  max-height: 52vh;
 }
 
 .input-container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+}
+
+.chat-message {
+  margin-bottom: 8px;
 }
 
 input {

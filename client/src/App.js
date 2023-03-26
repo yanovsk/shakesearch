@@ -35,9 +35,13 @@ function App() {
     setResults(data);
   };
 
-  const handleExplainClick = (play_name, act_scene, dialogue_lines) => {
+  const handleExplainClick = async (play_name, act_scene, dialogue_lines) => {
+    setContextParams({
+      play_name,
+      act_scene,
+      dialogue_lines,
+    });
     setShowExplanation(true);
-    setContextParams({ play_name, act_scene, dialogue_lines });
   };
 
   function formatDialogue(dialogue) {
@@ -116,6 +120,7 @@ function App() {
               <>
                 <div className="context">
                   <GetContext
+                    key={`${contextParams.play_name}-${contextParams.act_scene}-${contextParams.dialogue_lines}`}
                     play_name={contextParams.play_name}
                     act_scene={contextParams.act_scene}
                     dialogue_lines={contextParams.dialogue_lines}
