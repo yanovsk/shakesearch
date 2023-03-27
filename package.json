@@ -8,6 +8,9 @@
     "openai": "^3.2.1"
   },
   "scripts": {
-    "heroku-postbuild": "cd client && npm ci && npm run build --legacy-peer-deps"
+    "heroku-postbuild": "cd client && npm ci && npm run build"
+  },
+  "engines": {
+    "node": "18.13.0"
   }
 }
