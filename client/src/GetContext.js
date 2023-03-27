@@ -39,7 +39,9 @@ function GetContext({
 
   const resetChatHistory = async () => {
     try {
-      await axios.post(`${env.REACT_APP_API_URL}/reset-chat-history`);
+      await axios.post(
+        "https://shakesearch4.herokuapp.com//reset-chat-history"
+      );
     } catch (err) {
       console.error(err);
     }
@@ -50,7 +52,7 @@ function GetContext({
     setLoading(true);
     try {
       const response = await axios.post(
-        `${env.REACT_APP_API_URL}/get-context`,
+        "https://shakesearch4.herokuapp.com//get-context",
         {
           play_name,
           act_scene,
@@ -73,7 +75,7 @@ function GetContext({
     setLoading(true);
     try {
       const response = await axios.post(
-        `${env.REACT_APP_API_URL}get-line-context`,
+        "https://shakesearch4.herokuapp.com/get-line-context",
         {
           play_name,
           act_scene,
@@ -118,10 +120,13 @@ function GetContext({
     ]);
     setLoading(true);
     try {
-      const chat_response = await axios.post(`${env.REACT_APP_API_URL}/chat`, {
-        role: "user",
-        content: userInput,
-      });
+      const chat_response = await axios.post(
+        "https://shakesearch4.herokuapp.com/chat",
+        {
+          role: "user",
+          content: userInput,
+        }
+      );
 
       setChatHistory((prevState) => [
         ...prevState,

@@ -87,7 +87,7 @@ function App() {
   };
 
   const fetchResults = async () => {
-    const response = await fetch(`${env.REACT_APP_API_URL}/search`, {
+    const response = await fetch("https://shakesearch4.herokuapp.com/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: searchQuery, top_k: topK }),
@@ -99,7 +99,7 @@ function App() {
   const fetchSummary = async () => {
     try {
       const response = await axios.post(
-        `${env.REACT_APP_API_URL}/get-summary`,
+        "https://shakesearch4.herokuapp.com//get-summary",
         {
           query: searchQuery,
         }
