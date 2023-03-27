@@ -12,7 +12,7 @@ import {
   Button,
   IconButton,
   Icon,
-} from "@material-ui/core";
+} from "@mui/material";
 
 // const URL = "http://localhost:5050";
 const URL = "https://shakesearch5.herokuapp.com";

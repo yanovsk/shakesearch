@@ -11,7 +11,7 @@ import {
   FormControlLabel,
   FormControl,
   FormLabel,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import Divider from "@mui/material/Divider";
 import env from "react-dotenv";
