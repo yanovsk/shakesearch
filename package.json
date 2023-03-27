@@ -8,6 +8,6 @@
     "openai": "^3.2.1"
   },
   "scripts": {
-    "heroku-postbuild": "cd client && npm ci && npm run build"
+    "heroku-postbuild": "cd client && npm ci && npm run build --legacy-peer-deps"
   }
 }
