@@ -11,16 +11,17 @@
 }
 
 .logo {
-  max-width: 80%; /* This ensures that the image doesn't overflow its container */
-  max-height: 90px; /* Limit the height to maintain proportions */
-  width: auto; /* Maintain the image's aspect ratio */
-  height: auto; /* Maintain the image's aspect ratio */
+  max-width: 80%;
+  max-height: 90px;
+  width: auto;
+  height: auto;
   margin-bottom: 25px;
 }
-.search-wrapper {
+
+.search-field {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 9px;
 }
 
 .wrapper {
@@ -34,17 +35,25 @@
   top: 20px;
   margin-left: 20px;
 }
-.search-wrapper {
-  flex-basis: 100vh;
+
+.top_relevant {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.top_rel_name,
+.top_rel_sel {
+  font-size: 65%;
+}
+
+.top_rel_sel {
+  margin-left: 10px;
+}
+
 .card-and-expl {
   display: flex;
   flex-direction: row;
-}
-.search-field {
-  display: flex;
-  align-items: center;
-  gap: 9px;
 }
 
 .cards {
@@ -62,6 +71,39 @@
   width: 300px;
 }
 
+.message-input {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+/* Media query for mobile and smaller devices */
+@media screen and (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+  }
+  .context {
+    position: static;
+    margin-left: 0;
+    margin-top: 20px;
+  }
+  .cards {
+    width: 90%;
+  }
+  .explanation-card {
+    position: static;
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+  }
+}
+
+/* Media query for tablets and medium-sized devices */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .cards {
+    width: 70%;
+  }
+}
+
 /*GET CONTEXT*/
 /* src/App.css */
 .GetContext {
@@ -69,20 +111,25 @@
   margin: 0 auto;
   width: 70vh;
   height: 60vh;
+  max-height: 60vh;
 }
 
 .chat-and-input {
   display: flex;
   flex-direction: column;
-  width: 68vh;
 }
 
 .chat-container {
   overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-  height: 52vh;
-  max-height: 52vh;
+  height: 50vh;
+  max-height: 53vh;
+}
+
+.message-input {
+  display: flex;
+  flex-direction: row;
 }
 
 .chat-container::-webkit-scrollbar {
@@ -100,11 +147,6 @@
 
 .chat-container:hover::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.3);
-}
-
-.input-container {
-  display: flex;
-  flex-direction: row;
 }
 
 .chat-message {

@@ -158,7 +158,7 @@ function GetContext({
           ))}
           {loading && <LinearProgress />}
         </div>
-        <div className="search-field">
+        <div className="message-input">
           <TextField
             variant="outlined"
             size="small"

@@ -6,7 +6,13 @@ import {
   TextField,
   Typography,
   Button,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
 } from "@material-ui/core";
+
 import Divider from "@mui/material/Divider";
 import "./App.css";
 import logo from "./assets/logo.png";
@@ -23,6 +29,8 @@ function App() {
   const [searchExecuted, setSearchExecuted] = useState(false);
   const [loadLineContext, setLoadLineContext] = useState(false);
   const [loadExcerptContext, setLoadExcerptContext] = useState(false);
+  const [topK, setTopK] = useState(5);
+  const [hasTyped, setHasTyped] = useState(false);
 
   const [contextParams, setContextParams] = useState({
     play_name: "",
@@ -81,7 +89,7 @@ function App() {
     const response = await fetch("http://localhost:5050/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: searchQuery }),
+      body: JSON.stringify({ query: searchQuery, top_k: topK }),
     });
     const data = await response.json();
     setResults(data);
@@ -99,6 +107,15 @@ function App() {
     }
   };
 
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (!hasTyped && e.target.value.length > 0) {
+      setHasTyped(true);
+    } else if (hasTyped && e.target.value.length === 0) {
+      setHasTyped(false);
+    }
+  };
+
   return (
     <div className="wrapper">
       <div>
@@ -107,7 +124,7 @@ function App() {
           <div className="search-field">
             <TextField
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleInputChange}
               placeholder="Search"
               variant="outlined"
               size="small"
@@ -117,6 +134,37 @@ function App() {
               Search
             </Button>
           </div>
+          {hasTyped && (
+            <div className="top_relevant">
+              <Typography className="top_rel_name" variant="body1">
+                Top Relevant Results:
+              </Typography>{" "}
+              <div className="top_rel_sel">
+                <FormControl component="fieldset" style={{ marginLeft: 10 }}>
+                  <RadioGroup
+                    row
+                    aria-label="top-k"
+                    name="top-k"
+                    value={topK}
+                    size="small"
+                    onChange={(e) => setTopK(parseInt(e.target.value))}
+                  >
+                    <FormControlLabel value={5} control={<Radio />} label="5" />
+                    <FormControlLabel
+                      value={10}
+                      control={<Radio />}
+                      label="10"
+                    />
+                    <FormControlLabel
+                      value={15}
+                      control={<Radio />}
+                      label="15"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            </div>
+          )}
           <br />
         </div>
         {isLoading && <LinearProgress />}
