@@ -33,6 +33,9 @@
     "web-vitals": "^2.1.4",
     "@pinecone-database/pinecone": "^0.0.11"
   },
+  "install": {
+    "legacyPeerDeps": true
+  },
   "scripts": {
     "start": "node server.js",
     "build": "react-scripts build",
