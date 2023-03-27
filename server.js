@@ -4,6 +4,8 @@ const axios = require("axios");
 const { PineconeClient } = require("@pinecone-database/pinecone");
 const pinecone = new PineconeClient();
 require("dotenv").config();
+const path = require("path");
+
 const { Configuration, OpenAIApi } = require("openai");
 
 const configuration = new Configuration({
@@ -23,6 +25,16 @@ pinecone.init({
 });
 
 axios.defaults.headers.common["x-api-key"] = process.env.PINECONE_API_KEY;
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, "client/build")));
+
+// ...
+
+// Catch-all route to serve the React app
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
 
 app.post("/search", async (req, res) => {
   const query_text = req.body.query;

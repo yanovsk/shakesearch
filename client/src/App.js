@@ -21,6 +21,9 @@ import axios from "axios";
 import GetContext from "./GetContext";
 import ResultCard from "./ResultCard";
 
+// const URL = "http://localhost:5050";
+const URL = "https://shakesearch5.herokuapp.com";
+
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -87,7 +90,7 @@ function App() {
   };
 
   const fetchResults = async () => {
-    const response = await fetch(`${env.REACT_APP_API_URL}/search`, {
+    const response = await fetch(URL + "/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: searchQuery, top_k: topK }),
@@ -98,12 +101,9 @@ function App() {
 
   const fetchSummary = async () => {
     try {
-      const response = await axios.post(
-        `${env.REACT_APP_API_URL}/get-summary`,
-        {
-          query: searchQuery,
-        }
-      );
+      const response = await axios.post(URL + "/get-summary", {
+        query: searchQuery,
+      });
 
       setSummary(response.data.summary);
     } catch (err) {

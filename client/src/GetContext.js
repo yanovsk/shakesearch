@@ -13,7 +13,9 @@ import {
   IconButton,
   Icon,
 } from "@material-ui/core";
-import env from "react-dotenv";
+
+// const URL = "http://localhost:5050";
+const URL = "https://shakesearch5.herokuapp.com";
 
 function GetContext({
   play_name,
@@ -39,7 +41,7 @@ function GetContext({
 
   const resetChatHistory = async () => {
     try {
-      await axios.post(`${env.REACT_APP_API_URL}/reset-chat-history`);
+      await axios.post(URL + "/reset-chat-history");
     } catch (err) {
       console.error(err);
     }
@@ -49,14 +51,11 @@ function GetContext({
     await resetChatHistory();
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${env.REACT_APP_API_URL}/get-context`,
-        {
-          play_name,
-          act_scene,
-          dialogue_lines,
-        }
-      );
+      const response = await axios.post(URL + "/get-context", {
+        play_name,
+        act_scene,
+        dialogue_lines,
+      });
 
       setChatHistory((prevState) => [
         ...prevState,
@@ -72,15 +71,12 @@ function GetContext({
     await resetChatHistory();
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${env.REACT_APP_API_URL}get-line-context`,
-        {
-          play_name,
-          act_scene,
-          dialogue_lines,
-          selectedText,
-        }
-      );
+      const response = await axios.post(URL + "/get-line-context", {
+        play_name,
+        act_scene,
+        dialogue_lines,
+        selectedText,
+      });
 
       setChatHistory((prevState) => [
         ...prevState,
@@ -118,7 +114,7 @@ function GetContext({
     ]);
     setLoading(true);
     try {
-      const chat_response = await axios.post(`${env.REACT_APP_API_URL}/chat`, {
+      const chat_response = await axios.post(URL + "/chat", {
         role: "user",
         content: userInput,
       });

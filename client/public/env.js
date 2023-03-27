@@ -1,4 +1,5 @@
 window.env = {
+  "npm_config_legacy_peer_deps": "true",
   "TERM_PROGRAM": "iTerm.app",
   "NODE": "/usr/local/bin/node",
   "INIT_CWD": "/Users/dima/code/shakesearch/client",
@@ -9,7 +10,7 @@ window.env = {
   "npm_config_global_prefix": "/usr/local",
   "TERM_PROGRAM_VERSION": "3.4.19",
   "COLOR": "1",
-  "TERM_SESSION_ID": "w0t1p0:4574FDA2-094C-4597-A808-C1A4F89F96C5",
+  "TERM_SESSION_ID": "w0t2p0:85E59CB5-E398-4E85-8AA7-1ABE6529C742",
   "npm_config_noproxy": "",
   "npm_config_local_prefix": "/Users/dima/code/shakesearch/client",
   "ZSH": "/Users/dima/.oh-my-zsh",
@@ -45,7 +46,7 @@ window.env = {
   "HOME": "/Users/dima",
   "COLORFGBG": "7;0",
   "LC_TERMINAL_VERSION": "3.4.19",
-  "ITERM_SESSION_ID": "w0t1p0:4574FDA2-094C-4597-A808-C1A4F89F96C5",
+  "ITERM_SESSION_ID": "w0t2p0:85E59CB5-E398-4E85-8AA7-1ABE6529C742",
   "npm_config_cache": "/Users/dima/.npm",
   "LESS": "-R",
   "LOGNAME": "dimitri",
@@ -55,6 +56,5 @@ window.env = {
   "SECURITYSESSIONID": "186a3",
   "npm_node_execpath": "/usr/local/bin/node",
   "npm_config_prefix": "/usr/local",
-  "COLORTERM": "truecolor",
-  "REACT_APP_API_URL": "http://localhost:5050"
+  "COLORTERM": "truecolor"
 };
