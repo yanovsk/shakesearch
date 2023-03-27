@@ -22,7 +22,7 @@ import GetContext from "./GetContext";
 import ResultCard from "./ResultCard";
 
 // const URL = "http://localhost:5050";
-const URL = "https://shakesearch5.herokuapp.com";
+const URL = "https://shakesearch4.herokuapp.com";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
