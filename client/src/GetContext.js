@@ -24,6 +24,7 @@ function GetContext({
   selectedText,
   loadLineContext,
   loadExcerptContext,
+  model,
 }) {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
@@ -54,6 +55,7 @@ function GetContext({
         play_name,
         act_scene,
         dialogue_lines,
+        model,
       });
 
       setChatHistory((prevState) => [
@@ -75,6 +77,7 @@ function GetContext({
         act_scene,
         dialogue_lines,
         selectedText,
+        model,
       });
 
       setChatHistory((prevState) => [
@@ -116,6 +119,7 @@ function GetContext({
       const chat_response = await axios.post(URL + "/chat", {
         role: "user",
         content: userInput,
+        model,
       });
 
       setChatHistory((prevState) => [

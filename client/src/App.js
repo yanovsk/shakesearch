@@ -10,12 +10,14 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
+  Skeleton,
+  Box,
+  Fade,
 } from "@mui/material";
 
 import Divider from "@mui/material/Divider";
 import "./App.css";
 import logo from "./assets/logo.png";
-import axios from "axios";
 import GetContext from "./GetContext";
 import ResultCard from "./ResultCard";
 
@@ -27,12 +29,14 @@ function App() {
   const [results, setResults] = useState([]);
   const [showExplanation, setShowExplanation] = useState(false);
   const [summary, setSummary] = useState("");
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchExecuted, setSearchExecuted] = useState(false);
   const [loadLineContext, setLoadLineContext] = useState(false);
   const [loadExcerptContext, setLoadExcerptContext] = useState(false);
   const [topK, setTopK] = useState(5);
   const [hasTyped, setHasTyped] = useState(false);
+  const [gptModel, setGptModel] = useState("gpt-4");
 
   const [contextParams, setContextParams] = useState({
     play_name: "",
@@ -45,9 +49,46 @@ function App() {
     setShowExplanation(false);
     setIsLoading(true);
 
-    await Promise.all([fetchResults(), fetchSummary()]);
+    const data = await fetchResults();
     setSearchExecuted(true);
     setIsLoading(false);
+
+    if (data.length > 0) {
+      setIsSummaryLoading(true);
+      const summaryData = await fetchSummary(data);
+      setSummary(summaryData);
+      setIsSummaryLoading(false);
+    }
+  };
+
+  const fetchResults = async () => {
+    const response = await fetch(URL + "/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: searchQuery,
+        top_k: topK,
+        model: gptModel,
+      }),
+    });
+    const data = await response.json();
+    setResults(data);
+    return data;
+  };
+
+  const fetchSummary = async (matchesMetadata) => {
+    console.log("MODEL", gptModel);
+    const response = await fetch(URL + "/get-summary", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: searchQuery,
+        matchesMetadata: matchesMetadata,
+        model: gptModel,
+      }),
+    });
+    const data = await response.json();
+    return data.summary;
   };
 
   const handleGetContextClick = async (
@@ -86,28 +127,6 @@ function App() {
     setShowExplanation(false);
   };
 
-  const fetchResults = async () => {
-    const response = await fetch(URL + "/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: searchQuery, top_k: topK }),
-    });
-    const data = await response.json();
-    setResults(data);
-  };
-
-  const fetchSummary = async () => {
-    try {
-      const response = await axios.post(URL + "/get-summary", {
-        query: searchQuery,
-      });
-
-      setSummary(response.data.summary);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleInputChange = (e) => {
     setSearchQuery(e.target.value);
     if (!hasTyped && e.target.value.length > 0) {
@@ -120,6 +139,37 @@ function App() {
   return (
     <div className="wrapper">
       <div>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 16,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <FormControl component="fieldset">
+            <RadioGroup
+              row
+              aria-label="gpt-version"
+              name="gpt-version"
+              value={gptModel}
+              onChange={(e) => setGptModel(e.target.value)}
+            >
+              <FormControlLabel
+                value="gpt-3.5-turbo"
+                control={<Radio />}
+                label="GPT-3.5"
+              />
+              <FormControlLabel
+                value="gpt-4"
+                control={<Radio />}
+                label="GPT-4"
+              />
+            </RadioGroup>
+          </FormControl>
+        </Box>
         <div className="search-wrapper">
           <a href="https://shakesearch4.herokuapp.com">
             <img src={logo} alt="logo" className="logo" />
@@ -131,6 +181,7 @@ function App() {
               placeholder="Search"
               variant="outlined"
               size="small"
+              color="primary"
               style={{ width: 300 }}
             />
             <Button onClick={handleSearch} color="primary" size="medium">
@@ -174,7 +225,7 @@ function App() {
         {!isLoading && searchExecuted && (
           <div className="card-and-expl">
             <div className="cards">
-              <Card className="result-card">
+              <Card className="result-card summary-card">
                 <CardContent>
                   <Divider
                     textAlign="left"
@@ -182,7 +233,15 @@ function App() {
                   >
                     Summary
                   </Divider>
-                  <Typography variant="body1">{summary}</Typography>
+                  {isSummaryLoading ? (
+                    <div>
+                      <Skeleton animation="wave" />
+                      <Skeleton animation="wave" />
+                      <Skeleton animation="wave" />
+                    </div>
+                  ) : (
+                    <Typography variant="body1">{summary}</Typography>
+                  )}
                 </CardContent>
               </Card>
 
@@ -201,18 +260,21 @@ function App() {
             <div>
               {showExplanation && (
                 <>
-                  <div className="context">
-                    <GetContext
-                      key={`${contextParams.play_name}-${contextParams.act_scene}-${contextParams.dialogue_lines}`}
-                      play_name={contextParams.play_name}
-                      act_scene={contextParams.act_scene}
-                      dialogue_lines={contextParams.dialogue_lines}
-                      handleClose={handleCloseContext} // Pass the handleClose function as a prop
-                      selectedText={contextParams.selectedText}
-                      loadLineContext={loadLineContext}
-                      loadExcerptContext={loadExcerptContext}
-                    />
-                  </div>
+                  <Fade in={showExplanation}>
+                    <div className="context">
+                      <GetContext
+                        key={`${contextParams.play_name}-${contextParams.act_scene}-${contextParams.dialogue_lines}`}
+                        play_name={contextParams.play_name}
+                        act_scene={contextParams.act_scene}
+                        dialogue_lines={contextParams.dialogue_lines}
+                        handleClose={handleCloseContext} // Pass the handleClose function as a prop
+                        selectedText={contextParams.selectedText}
+                        loadLineContext={loadLineContext}
+                        loadExcerptContext={loadExcerptContext}
+                        model={gptModel}
+                      />
+                    </div>
+                  </Fade>
                 </>
               )}
             </div>

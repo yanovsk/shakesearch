@@ -72,68 +72,74 @@ app.post("/search", async (req, res) => {
   res.json(matchesMetadata);
 });
 
-//CHAT
-let chatHistory = [];
-
-app.post("/get-context", async (req, res) => {
-  const { play_name, act_scene, dialogue_lines } = req.body;
-  const context = `Provide more context about Shakespeare's play "${play_name}":\n${act_scene}\n${dialogue_lines}`;
-  chatHistory.push({ role: "system", content: context });
-
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [{ role: "system", content: context }],
-  });
-
-  chatHistory.push(completion.data.choices[0].message);
-  console.log("Push", chatHistory);
-  res.json(completion.data.choices[0].message);
-});
-
 app.post("/get-summary", async (req, res) => {
-  const { query } = req.body;
-  const summary_prompt = `Provide a short summary about the search results related to "${query}" in Shakespeare's plays.`;
+  const query_text = req.body.query;
+  const matchesMetadata = req.body.matchesMetadata;
+  const model = req.body.model;
+
+  const searchResultsToSummarize = matchesMetadata
+    .slice(0, 5)
+    .map((result) => `${result.play_name}\n${result.act_scene}\n`)
+    .join("\n");
+
+  const summary_prompt = `Provide a 100-word summary related to "${query_text}" in Shakespeare's plays:\n\n${searchResultsToSummarize}`;
 
   const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: model || "gpt-4",
     messages: [{ role: "system", content: summary_prompt }],
   });
 
   res.json({ summary: completion.data.choices[0].message.content });
 });
 
-app.post("/chat", async (req, res) => {
-  //add the most recent message
-  chatHistory.push(req.body);
+//CHAT
+let chatHistory = [];
+
+app.post("/get-context", async (req, res) => {
+  const { play_name, act_scene, dialogue_lines } = req.body;
+  const model = req.body.model;
+  const context = `Consider Shakespear's "${play_name}":\n${act_scene}\n. In 120 words provide more context about the following dialogue in this scene: ${dialogue_lines}`;
+  chatHistory.push({ role: "system", content: context });
 
   const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: chatHistory,
+    model: model || "gpt-4",
+    messages: [{ role: "system", content: context }],
   });
+
   chatHistory.push(completion.data.choices[0].message);
-  console.log(chatHistory);
   res.json(completion.data.choices[0].message);
 });
 
+app.post("/chat", async (req, res) => {
+  // Add the most recent message
+  const { role, content, model } = req.body;
+  chatHistory.push({ role, content });
+
+  const completion = await openai.createChatCompletion({
+    model: model || "gpt-4",
+    messages: chatHistory,
+  });
+  chatHistory.push(completion.data.choices[0].message);
+  res.json(completion.data.choices[0].message);
+});
 app.post("/reset-chat-history", (req, res) => {
   chatHistory = [];
   res.status(200).json({ message: "Chat history reset" });
-  console.log("reset:", chatHistory);
 });
 
 app.post("/get-line-context", async (req, res) => {
-  console.log(req.body);
-
   const { play_name, act_scene, dialogue_lines, selectedText } = req.body;
-  const prompt = `In the play "${play_name}" by William Shakespeare, there is a line: "${selectedText}". This line is from ${act_scene}. The surrounding dialogue is as follows: ${dialogue_lines}. Please provide more context and explain the significance of this line in the play.`;
+  const model = req.body.model;
+  const prompt = `Consider the line "${selectedText}" from the play "${play_name}" by William Shakespeare. 
+    This line is from ${act_scene}. The surrounding dialogue is as follows: ${dialogue_lines}. 
+    In 80 words provide more context to this line and/or explain the significance of this line in the ${act_scene}.`;
 
   chatHistory.push({ role: "system", content: prompt });
   const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: model || "gpt-4",
     messages: [{ role: "system", content: prompt }],
   });
   chatHistory.push(completion.data.choices[0].message);
-  console.log("Getting line context", completion.data.choices[0].message);
   res.json(completion.data.choices[0].message);
 });
 

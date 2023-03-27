@@ -35,6 +35,26 @@
   top: 20px;
   margin-left: 20px;
 }
+.summary-card {
+  min-height: 200px;
+  overflow-y: auto;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.typewriter-text {
+  overflow: hidden;
+  border-right: 0.15em solid rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  animation: typewriter 8s steps(100, end) 0s 1 normal both;
+}
 
 .top_relevant {
   display: flex;
