@@ -14,7 +14,15 @@ import {
   Icon,
 } from "@material-ui/core";
 
-function GetContext({ play_name, act_scene, dialogue_lines, handleClose }) {
+function GetContext({
+  play_name,
+  act_scene,
+  dialogue_lines,
+  handleClose,
+  selectedText,
+  loadLineContext,
+  loadExcerptContext,
+}) {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,9 +64,41 @@ function GetContext({ play_name, act_scene, dialogue_lines, handleClose }) {
     setLoading(false);
   };
 
+  const getReplyToLineContex = async () => {
+    await resetChatHistory();
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:5050/get-line-context",
+        {
+          play_name,
+          act_scene,
+          dialogue_lines,
+          selectedText,
+        }
+      );
+
+      setChatHistory((prevState) => [
+        ...prevState,
+        { message: response.data.content, sender: "Assistant" },
+      ]);
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    getInitialContext();
-  }, [play_name, act_scene, dialogue_lines]);
+    if (loadExcerptContext) {
+      getInitialContext();
+    }
+  }, [loadExcerptContext]);
+
+  useEffect(() => {
+    if (loadLineContext) {
+      getReplyToLineContex();
+    }
+  }, [loadLineContext]);
 
   const handleUserInputChange = (e) => {
     setUserInput(e.target.value);

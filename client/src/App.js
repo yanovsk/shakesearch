@@ -21,11 +21,14 @@ function App() {
   const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchExecuted, setSearchExecuted] = useState(false);
+  const [loadLineContext, setLoadLineContext] = useState(false);
+  const [loadExcerptContext, setLoadExcerptContext] = useState(false);
 
   const [contextParams, setContextParams] = useState({
     play_name: "",
     act_scene: "",
     dialogue_lines: "",
+    get_line_context_reply: "",
   });
 
   const handleSearch = async () => {
@@ -36,6 +39,38 @@ function App() {
     await Promise.all([fetchResults(), fetchSummary()]);
     setSearchExecuted(true); // Set searchExecuted to true
     setIsLoading(false);
+  };
+
+  const handleGetContextClick = async (
+    play_name,
+    act_scene,
+    dialogue_lines
+  ) => {
+    setContextParams({
+      play_name,
+      act_scene,
+      dialogue_lines,
+    });
+    setShowExplanation(true);
+    setLoadExcerptContext(true); // Set loadExcerptContext to true
+    setLoadLineContext(false); // Set loadLineContext to false
+  };
+
+  const handleGetLineContextClick = async (
+    play_name,
+    act_scene,
+    dialogue_lines,
+    selectedText
+  ) => {
+    setContextParams({
+      play_name,
+      act_scene,
+      dialogue_lines,
+      selectedText,
+    });
+    setShowExplanation(true);
+    setLoadLineContext(true); // Set loadLineContext to true
+    setLoadExcerptContext(false); // Set loadExcerptContext to false
   };
 
   const handleCloseContext = () => {
@@ -64,22 +99,6 @@ function App() {
     }
   };
 
-  const handleExplainClick = async (play_name, act_scene, dialogue_lines) => {
-    setContextParams({
-      play_name,
-      act_scene,
-      dialogue_lines,
-    });
-    setShowExplanation(true);
-  };
-
-  function formatDialogue(dialogue) {
-    return dialogue.split("\n").map((line, index) => (
-      <Typography key={index} variant="body1">
-        {line}
-      </Typography>
-    ));
-  }
   return (
     <div className="wrapper">
       <div>
@@ -123,7 +142,8 @@ function App() {
                     key={index}
                     index={index}
                     result={result}
-                    handleExplainClick={handleExplainClick}
+                    handleGetContextClick={handleGetContextClick}
+                    handleGetLineContextClick={handleGetLineContextClick}
                   />
                 );
               })}
@@ -138,6 +158,9 @@ function App() {
                       act_scene={contextParams.act_scene}
                       dialogue_lines={contextParams.dialogue_lines}
                       handleClose={handleCloseContext} // Pass the handleClose function as a prop
+                      selectedText={contextParams.selectedText}
+                      loadLineContext={loadLineContext}
+                      loadExcerptContext={loadExcerptContext}
                     />
                   </div>
                 </>

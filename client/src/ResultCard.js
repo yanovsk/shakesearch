@@ -7,8 +7,13 @@ import {
   Popover,
 } from "@material-ui/core";
 import Divider from "@mui/material/Divider";
+import axios from "axios";
 
-const ResultCard = ({ result, handleExplainClick }) => {
+const ResultCard = ({
+  result,
+  handleGetContextClick,
+  handleGetLineContextClick,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [popOverPosition, setPopOverPosition] = useState({
     vertical: "top",
@@ -58,7 +63,7 @@ const ResultCard = ({ result, handleExplainClick }) => {
           className="#outlined-buttons"
           style={{ width: 150, height: 30, marginTop: 10 }}
           onClick={() =>
-            handleExplainClick(
+            handleGetContextClick(
               result.play_name,
               result.act_scene,
               result.dialogue_lines
@@ -87,10 +92,12 @@ const ResultCard = ({ result, handleExplainClick }) => {
           className="#outlined-buttons"
           size="small"
           onClick={() => {
-            handleExplainClick(
+            const selectedText = window.getSelection().toString();
+            handleGetLineContextClick(
               result.play_name,
               result.act_scene,
-              result.dialogue_lines
+              result.dialogue_lines,
+              selectedText
             );
             handleClose();
           }}
