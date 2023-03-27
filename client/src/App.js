@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,11 +10,9 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
-  FormLabel,
 } from "@mui/material";
 
 import Divider from "@mui/material/Divider";
-import env from "react-dotenv";
 import "./App.css";
 import logo from "./assets/logo.png";
 import axios from "axios";
@@ -47,9 +45,8 @@ function App() {
     setShowExplanation(false);
     setIsLoading(true);
 
-    // Await the results of both fetchResults and fetchSummary
     await Promise.all([fetchResults(), fetchSummary()]);
-    setSearchExecuted(true); // Set searchExecuted to true
+    setSearchExecuted(true);
     setIsLoading(false);
   };
 
@@ -64,8 +61,8 @@ function App() {
       dialogue_lines,
     });
     setShowExplanation(true);
-    setLoadExcerptContext(true); // Set loadExcerptContext to true
-    setLoadLineContext(false); // Set loadLineContext to false
+    setLoadExcerptContext(true);
+    setLoadLineContext(false);
   };
 
   const handleGetLineContextClick = async (
@@ -81,8 +78,8 @@ function App() {
       selectedText,
     });
     setShowExplanation(true);
-    setLoadLineContext(true); // Set loadLineContext to true
-    setLoadExcerptContext(false); // Set loadExcerptContext to false
+    setLoadLineContext(true);
+    setLoadExcerptContext(false);
   };
 
   const handleCloseContext = () => {
@@ -124,7 +121,9 @@ function App() {
     <div className="wrapper">
       <div>
         <div className="search-wrapper">
-          <img src={logo} alt="logo" className="logo" />
+          <a href="https://shakesearch4.herokuapp.com">
+            <img src={logo} alt="logo" className="logo" />
+          </a>
           <div className="search-field">
             <TextField
               value={searchQuery}
@@ -142,7 +141,7 @@ function App() {
             <div className="top_relevant">
               <Typography className="top_rel_name" variant="body1">
                 Top Relevant Results:
-              </Typography>{" "}
+              </Typography>
               <div className="top_rel_sel">
                 <FormControl component="fieldset" style={{ marginLeft: 10 }}>
                   <RadioGroup
@@ -172,7 +171,6 @@ function App() {
           <br />
         </div>
         {isLoading && <LinearProgress />}
-
         {!isLoading && searchExecuted && (
           <div className="card-and-expl">
             <div className="cards">

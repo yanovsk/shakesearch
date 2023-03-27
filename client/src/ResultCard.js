@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Card, CardContent, Typography, Button, Popover } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import axios from "axios";
 
 const ResultCard = ({
   result,

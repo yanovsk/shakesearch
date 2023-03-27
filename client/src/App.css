@@ -57,8 +57,16 @@
 }
 
 .cards {
-  width: 50vh;
+  width: 53vh;
 }
+
+/* Media query for 13-inch screens */
+@media screen and (max-width: 1280px) {
+  .cards {
+    width: 100vh; /* 20% wider than the original 70vh */
+  }
+}
+
 .result-card {
   margin-bottom: 16px;
 }
@@ -76,42 +84,13 @@
   align-items: center;
   gap: 9px;
 }
-/* Media query for mobile and smaller devices */
-@media screen and (max-width: 768px) {
-  .wrapper {
-    flex-direction: column;
-  }
-  .context {
-    position: static;
-    margin-left: 0;
-    margin-top: 20px;
-  }
-  .cards {
-    width: 90%;
-  }
-  .explanation-card {
-    position: static;
-    width: 100%;
-    margin-top: 20px;
-    padding: 16px;
-  }
-}
-
-/* Media query for tablets and medium-sized devices */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-  .cards {
-    width: 70%;
-  }
-}
 
 /*GET CONTEXT*/
 /* src/App.css */
 .GetContext {
   font-family: sans-serif;
   margin: 0 auto;
-  width: 70vh;
-  height: 60vh;
-  max-height: 60vh;
+  width: 75vh;
 }
 
 .chat-and-input {
@@ -125,6 +104,7 @@
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
   height: 50vh;
   max-height: 53vh;
+  width: 71vh;
 }
 
 .message-input {

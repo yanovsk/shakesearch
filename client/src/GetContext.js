@@ -11,7 +11,6 @@ import {
   LinearProgress,
   Button,
   IconButton,
-  Icon,
 } from "@mui/material";
 
 // const URL = "http://localhost:5050";
@@ -147,7 +146,7 @@ function GetContext({
               <Typography
                 variant="caption"
                 align="right"
-                style={{ color: "gray" }}
+                style={{ fontSize: 14, color: "gray" }}
               >
                 {entry.sender}
               </Typography>
