@@ -40,7 +40,7 @@ function GetContext({
   const resetChatHistory = async () => {
     try {
       await axios.post(
-        "https://shakesearch4.herokuapp.com//reset-chat-history"
+        "https://shakesearch5.herokuapp.com//reset-chat-history"
       );
     } catch (err) {
       console.error(err);
@@ -52,7 +52,7 @@ function GetContext({
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://shakesearch4.herokuapp.com//get-context",
+        "https://shakesearch5.herokuapp.com//get-context",
         {
           play_name,
           act_scene,
@@ -75,7 +75,7 @@ function GetContext({
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://shakesearch4.herokuapp.com/get-line-context",
+        "https://shakesearch5.herokuapp.com/get-line-context",
         {
           play_name,
           act_scene,
@@ -121,7 +121,7 @@ function GetContext({
     setLoading(true);
     try {
       const chat_response = await axios.post(
-        "https://shakesearch4.herokuapp.com/chat",
+        "https://shakesearch5.herokuapp.com/chat",
         {
           role: "user",
           content: userInput,
