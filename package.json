@@ -1,6 +1,19 @@
 {
+  "name": "shakesearch",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "14.x",
+    "npm": ">=7"
+  },
   "dependencies": {
-    "@pinecone-database/pinecone": "^0.0.11",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/material": "^5.11.14",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
     "axios": "^1.3.4",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
