@@ -13,6 +13,7 @@ import {
   IconButton,
   Icon,
 } from "@material-ui/core";
+import env from "react-dotenv";
 
 function GetContext({
   play_name,
@@ -38,7 +39,7 @@ function GetContext({
 
   const resetChatHistory = async () => {
     try {
-      await axios.post("http://localhost:5050/reset-chat-history");
+      await axios.post(`${env.REACT_APP_API_URL}/reset-chat-history`);
     } catch (err) {
       console.error(err);
     }
@@ -48,11 +49,14 @@ function GetContext({
     await resetChatHistory();
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5050/get-context", {
-        play_name,
-        act_scene,
-        dialogue_lines,
-      });
+      const response = await axios.post(
+        `${env.REACT_APP_API_URL}/get-context`,
+        {
+          play_name,
+          act_scene,
+          dialogue_lines,
+        }
+      );
 
       setChatHistory((prevState) => [
         ...prevState,
@@ -69,7 +73,7 @@ function GetContext({
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5050/get-line-context",
+        `${env.REACT_APP_API_URL}get-line-context`,
         {
           play_name,
           act_scene,
@@ -114,7 +118,7 @@ function GetContext({
     ]);
     setLoading(true);
     try {
-      const chat_response = await axios.post("http://localhost:5050/chat", {
+      const chat_response = await axios.post(`${env.REACT_APP_API_URL}/chat`, {
         role: "user",
         content: userInput,
       });

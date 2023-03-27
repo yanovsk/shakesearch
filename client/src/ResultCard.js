@@ -52,11 +52,23 @@ const ResultCard = ({
         <Divider textAlign="left" style={{ fontSize: 14, color: "gray" }}>
           Excerpt
         </Divider>
-        {result.dialogue_lines.split("\n").map((line, index) => (
-          <Typography key={index} variant="body1">
-            {line}
-          </Typography>
-        ))}
+        {result.dialogue_lines.split("\n").map((line, index) => {
+          const isSpeaker = line.toUpperCase() === line;
+          const isStageDirection =
+            line.startsWith("(") || line.startsWith("Exeunt");
+          return (
+            <Typography
+              key={index}
+              variant="body1"
+              style={{
+                fontStyle: isStageDirection ? "italic" : "normal",
+                marginLeft: isSpeaker ? 0 : "1rem",
+              }}
+            >
+              {line}
+            </Typography>
+          );
+        })}
         <Divider style={{ marginTop: 10 }} />
         <Button
           variant="outlined"

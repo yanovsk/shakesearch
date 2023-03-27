@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 
 import Divider from "@mui/material/Divider";
+import env from "react-dotenv";
 import "./App.css";
 import logo from "./assets/logo.png";
 import axios from "axios";
@@ -86,7 +87,7 @@ function App() {
   };
 
   const fetchResults = async () => {
-    const response = await fetch("http://localhost:5050/search", {
+    const response = await fetch(`${env.REACT_APP_API_URL}/search`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: searchQuery, top_k: topK }),
@@ -97,9 +98,12 @@ function App() {
 
   const fetchSummary = async () => {
     try {
-      const response = await axios.post("http://localhost:5050/get-summary", {
-        query: searchQuery,
-      });
+      const response = await axios.post(
+        `${env.REACT_APP_API_URL}/get-summary`,
+        {
+          query: searchQuery,
+        }
+      );
 
       setSummary(response.data.summary);
     } catch (err) {
