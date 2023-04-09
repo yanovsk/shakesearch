@@ -21,10 +21,7 @@ import logo from "./assets/logo.png";
 import GetContext from "./GetContext";
 import ResultCard from "./ResultCard";
 
-const URL =
-  process.env.NODE_ENV === "production"
-    ? process.env.REACT_APP_PROD_URL
-    : process.env.REACT_APP_LOCAL_URL;
+const URL = process.env.REACT_APP_URL;
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
