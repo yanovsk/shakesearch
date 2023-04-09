@@ -22,9 +22,9 @@ import GetContext from "./GetContext";
 import ResultCard from "./ResultCard";
 
 const URL =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_LOCAL_URL
-    : process.env.REACT_APP_PROD_URL;
+  process.env.NODE_ENV === "production"
+    ? process.env.REACT_APP_PROD_URL
+    : process.env.REACT_APP_LOCAL_URL;
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
