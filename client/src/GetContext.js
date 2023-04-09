@@ -13,8 +13,10 @@ import {
   IconButton,
 } from "@mui/material";
 
-// const URL = "http://localhost:5050";
-const URL = "https://shakesearch4.herokuapp.com";
+const URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_LOCAL_URL
+    : process.env.REACT_APP_PROD_URL;
 
 function GetContext({
   play_name,
