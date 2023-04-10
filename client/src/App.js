@@ -103,7 +103,7 @@ function App() {
       );
       return response.data.summary;
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
     }
   };
 
