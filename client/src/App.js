@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Card,
   CardContent,
@@ -26,7 +27,7 @@ const URL = process.env.REACT_APP_URL;
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [showGetContext, setShowGetContext] = useState(false);
   const [summary, setSummary] = useState("");
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +38,7 @@ function App() {
   const [hasTyped, setHasTyped] = useState(false);
   const [gptModel, setGptModel] = useState("gpt-4");
 
+  // Defining state variable for context parameters used in GetContext component
   const [contextParams, setContextParams] = useState({
     play_name: "",
     act_scene: "",
@@ -45,7 +47,8 @@ function App() {
   });
 
   const handleSearch = async () => {
-    setShowExplanation(false);
+    //hide context window (in was open before) and show loading bar
+    setShowGetContext(false);
     setIsLoading(true);
 
     const data = await fetchResults();
@@ -61,33 +64,47 @@ function App() {
   };
 
   const fetchResults = async () => {
-    const response = await fetch(URL + "/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: searchQuery,
-        top_k: topK,
-        model: gptModel,
-      }),
-    });
-    const data = await response.json();
-    setResults(data);
-    return data;
+    try {
+      const response = await axios.post(
+        `${URL}/search`,
+        {
+          query: searchQuery,
+          top_k: topK,
+          model: gptModel,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data;
+      setResults(data);
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const fetchSummary = async (matchesMetadata) => {
-    console.log("MODEL", gptModel);
-    const response = await fetch(URL + "/get-summary", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: searchQuery,
-        matchesMetadata: matchesMetadata,
-        model: gptModel,
-      }),
-    });
-    const data = await response.json();
-    return data.summary;
+  const fetchSummary = async (matches_metadata) => {
+    try {
+      const response = await axios.post(
+        `${URL}/get-summary`,
+        {
+          query: searchQuery,
+          matches_metadata: matches_metadata,
+          model: gptModel,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data.summary;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleGetContextClick = async (
@@ -100,7 +117,7 @@ function App() {
       act_scene,
       dialogue_lines,
     });
-    setShowExplanation(true);
+    setShowGetContext(true);
     setLoadExcerptContext(true);
     setLoadLineContext(false);
   };
@@ -117,13 +134,13 @@ function App() {
       dialogue_lines,
       selectedText,
     });
-    setShowExplanation(true);
+    setShowGetContext(true);
     setLoadLineContext(true);
     setLoadExcerptContext(false);
   };
 
   const handleCloseContext = () => {
-    setShowExplanation(false);
+    setShowGetContext(false);
   };
 
   const handleInputChange = (e) => {
@@ -221,8 +238,10 @@ function App() {
           <br />
         </div>
         {isLoading && <LinearProgress />}
+
         {!isLoading && searchExecuted && (
           <div className="card-and-expl">
+            {/* Summary Card */}
             <div className="cards">
               <Card className="result-card summary-card">
                 <CardContent>
@@ -247,8 +266,6 @@ function App() {
               {results.map((result, index) => {
                 return (
                   <ResultCard
-                    key={index}
-                    index={index}
                     result={result}
                     handleGetContextClick={handleGetContextClick}
                     handleGetLineContextClick={handleGetLineContextClick}
@@ -257,9 +274,9 @@ function App() {
               })}
             </div>
             <div>
-              {showExplanation && (
+              {showGetContext && (
                 <>
-                  <Fade in={showExplanation}>
+                  <Fade in={showGetContext}>
                     <div className="context">
                       <GetContext
                         key={`${contextParams.play_name}-${contextParams.act_scene}-${contextParams.dialogue_lines}`}

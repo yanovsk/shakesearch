@@ -78,6 +78,7 @@ const ResultCard = ({
           Get Context
         </Button>
       </CardContent>
+
       <Popover
         id={id}
         open={open}

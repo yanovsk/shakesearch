@@ -2,6 +2,12 @@
 .AppBar {
   background-color: white;
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
 .search-wrapper {
   margin-top: 3vh;
   display: flex;
@@ -24,11 +30,6 @@
   gap: 9px;
 }
 
-.wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
 .context {
   position: -webkit-sticky; /* Safari */
   position: sticky;
@@ -38,22 +39,6 @@
 .summary-card {
   min-height: 200px;
   overflow-y: auto;
-}
-
-@keyframes typewriter {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.typewriter-text {
-  overflow: hidden;
-  border-right: 0.15em solid rgba(0, 0, 0, 0.5);
-  white-space: nowrap;
-  animation: typewriter 8s steps(100, end) 0s 1 normal both;
 }
 
 .top_relevant {

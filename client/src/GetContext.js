@@ -29,8 +29,8 @@ function GetContext({
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  //autoscroll down when server returns new message
   const chatContainerRef = useRef();
-
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -41,6 +41,7 @@ function GetContext({
   const resetChatHistory = async () => {
     try {
       await axios.post(URL + "/reset-chat-history");
+      setChatHistory([]);
     } catch (err) {
       console.error(err);
     }
@@ -106,6 +107,7 @@ function GetContext({
   };
 
   const sendMessage = async () => {
+    //prevent empty messages
     if (userInput.trim() === "") return;
     setUserInput("");
 
@@ -114,6 +116,7 @@ function GetContext({
       { message: userInput, sender: "User" },
     ]);
     setLoading(true);
+
     try {
       const chat_response = await axios.post(URL + "/chat", {
         role: "user",
@@ -142,10 +145,7 @@ function GetContext({
       <CardContent className="chat-and-input">
         <div className="chat-container" ref={chatContainerRef}>
           {chatHistory.map((entry, index) => (
-            <div
-              key={index}
-              className={`chat-message ${entry.sender.toLowerCase()}`}
-            >
+            <div key={index} className="chat-message">
               <Typography
                 variant="caption"
                 align="right"
@@ -158,6 +158,7 @@ function GetContext({
               </Typography>
             </div>
           ))}
+
           {loading && <LinearProgress />}
         </div>
         <div className="message-input">
