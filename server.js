@@ -10,6 +10,7 @@ const { Configuration, OpenAIApi } = require("openai");
 const { PineconeClient } = require("@pinecone-database/pinecone");
 const pinecone = new PineconeClient();
 const app = express();
+const { v4: uuidv4 } = require("uuid");
 
 require("dotenv").config();
 app.use(cors());
@@ -144,13 +145,14 @@ app.post("/get-summary", async (req, res) => {
 });
 
 //-----CHAT-----//
-let chat_history = [];
+const chat_histories = new Map();
 
 const getContextSchema = Joi.object({
   play_name: Joi.string().required(),
   act_scene: Joi.string().required(),
   dialogue_lines: Joi.string().required(),
-  model: Joi.string().optional(),
+  model: Joi.string().required(),
+  userId: Joi.string().required(),
 });
 
 app.post("/get-context", async (req, res) => {
@@ -160,10 +162,13 @@ app.post("/get-context", async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { play_name, act_scene, dialogue_lines, model } = value;
+  const { play_name, act_scene, dialogue_lines, model, userId } = value;
 
   const context = `Consider Shakespear's "${play_name}":\n${act_scene}\n. 
                   In 120 words provide more context about the following dialogue in this scene: ${dialogue_lines}`;
+
+  console.log(userId);
+  const chat_history = chat_histories.get(userId) || [];
 
   chat_history.push({ role: "system", content: context });
 
@@ -173,13 +178,16 @@ app.post("/get-context", async (req, res) => {
   });
 
   chat_history.push(completion.data.choices[0].message);
+  chat_histories.set(userId, chat_history);
+
   res.json(completion.data.choices[0].message);
 });
 
 const chatSchema = Joi.object({
   role: Joi.string().valid("user", "assistant").required(),
   content: Joi.string().required(),
-  model: Joi.string().optional(),
+  model: Joi.string().required(),
+  userId: Joi.string().required(),
 });
 
 app.post("/chat", async (req, res) => {
@@ -188,9 +196,9 @@ app.post("/chat", async (req, res) => {
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-
   // Add the most recent message
-  const { role, content, model } = value;
+  const { role, content, model, userId } = value;
+  const chat_history = chat_histories.get(userId) || [];
   chat_history.push({ role, content });
 
   const completion = await openai.createChatCompletion({
@@ -198,12 +206,19 @@ app.post("/chat", async (req, res) => {
     messages: chat_history,
   });
   chat_history.push(completion.data.choices[0].message);
+  chat_histories.set(userId, chat_history);
+
   res.json(completion.data.choices[0].message);
 });
 
 app.post("/reset-chat-history", (req, res) => {
-  chat_history = [];
-  res.status(200).json({ message: "Chat history reset" });
+  const userId = req.body.userId;
+  if (userId) {
+    chat_histories.delete(userId);
+    res.status(200).json({ message: "Chat history reset for user" });
+  } else {
+    res.status(400).json({ message: "User ID is missing" });
+  }
 });
 
 const getLineContextSchema = Joi.object({
@@ -212,6 +227,7 @@ const getLineContextSchema = Joi.object({
   dialogue_lines: Joi.string().required(),
   selectedText: Joi.string().required(),
   model: Joi.string().optional(),
+  userId: Joi.string().optional(),
 });
 
 app.post("/get-line-context", async (req, res) => {
@@ -221,7 +237,9 @@ app.post("/get-line-context", async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { play_name, act_scene, dialogue_lines, selectedText, model } = value;
+  const { play_name, act_scene, dialogue_lines, selectedText, model, userId } =
+    value;
+  const chat_history = chat_histories.get(userId) || [];
 
   const prompt = `Consider the line "${selectedText}" from the play "${play_name}" by William Shakespeare. 
     This line is from ${act_scene}. The surrounding dialogue is as follows: ${dialogue_lines}. 
@@ -233,6 +251,7 @@ app.post("/get-line-context", async (req, res) => {
     messages: [{ role: "system", content: prompt }],
   });
   chat_history.push(completion.data.choices[0].message);
+  chat_histories.set(userId, chat_history);
   res.json(completion.data.choices[0].message);
 });
 

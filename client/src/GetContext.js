@@ -24,6 +24,7 @@ function GetContext({
   loadLineContext,
   loadExcerptContext,
   model,
+  userId,
 }) {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
@@ -43,7 +44,7 @@ function GetContext({
       await axios.post(URL + "/reset-chat-history");
       setChatHistory([]);
     } catch (error) {
-      alert(error.response.data.error);
+      console.log(error.response.data.error);
     }
   };
 
@@ -56,6 +57,7 @@ function GetContext({
         act_scene,
         dialogue_lines,
         model,
+        userId,
       });
 
       setChatHistory((prevState) => [
@@ -63,7 +65,7 @@ function GetContext({
         { message: response.data.content, sender: "Assistant" },
       ]);
     } catch (error) {
-      alert(error.response.data.error);
+      console.log(error.response.data.error);
     }
     setLoading(false);
   };
@@ -78,6 +80,7 @@ function GetContext({
         dialogue_lines,
         selectedText,
         model,
+        userId,
       });
 
       setChatHistory((prevState) => [
@@ -85,7 +88,7 @@ function GetContext({
         { message: response.data.content, sender: "Assistant" },
       ]);
     } catch (error) {
-      alert(error.response.data.error);
+      console.log(error.response.data.error);
     }
     setLoading(false);
   };
@@ -122,6 +125,7 @@ function GetContext({
         role: "user",
         content: userInput,
         model,
+        userId,
       });
 
       setChatHistory((prevState) => [
@@ -129,7 +133,7 @@ function GetContext({
         { message: chat_response.data.content, sender: "Assistant" },
       ]);
     } catch (error) {
-      alert(error.response.data.error);
+      console.log(error.response.data.error);
     }
     setLoading(false);
   };

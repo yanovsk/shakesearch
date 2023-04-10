@@ -37,6 +37,11 @@ function App() {
   const [topK, setTopK] = useState(5);
   const [hasTyped, setHasTyped] = useState(false);
   const [gptModel, setGptModel] = useState("gpt-4");
+  const userId =
+    localStorage.getItem("userId") ||
+    localStorage.setItem("userId", Date.now().toString());
+
+  console.log(userId);
 
   // Defining state variable for context parameters used in GetContext component
   const [contextParams, setContextParams] = useState({
@@ -82,7 +87,7 @@ function App() {
       setResults(data);
       return data;
     } catch (error) {
-      alert(error.response.data.error);
+      console.log(error.response.data.error);
     }
   };
 
@@ -103,7 +108,7 @@ function App() {
       );
       return response.data.summary;
     } catch (error) {
-      alert(error.response.data.error);
+      console.log(error.response.data.error);
     }
   };
 
@@ -293,6 +298,7 @@ function App() {
                         loadLineContext={loadLineContext}
                         loadExcerptContext={loadExcerptContext}
                         model={gptModel}
+                        userId={userId} // Pass the userId as a prop
                       />
                     </div>
                   </Fade>
