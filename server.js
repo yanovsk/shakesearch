@@ -4,6 +4,7 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
+const Joi = require("joi");
 
 const { Configuration, OpenAIApi } = require("openai");
 const { PineconeClient } = require("@pinecone-database/pinecone");
@@ -25,7 +26,7 @@ app.get("*", (req, res) => {
 
 const apiLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  max: 10, // Limit each IP to 60 requests per windowMs
+  max: 60, // Limit each IP to 60 requests per windowMs
   message: {
     status: 429, // HTTP status code for "Too Many Requests"
     error: "Too many requests, please try again later.",
@@ -53,9 +54,21 @@ pinecone.init({
 
 axios.defaults.headers.common["x-api-key"] = process.env.PINECONE_API_KEY;
 
+//JOI Schema
+const searchSchema = Joi.object({
+  query: Joi.string().required(),
+  top_k: Joi.number().integer().min(1).required(),
+  model: Joi.string().required(),
+});
+
 app.post("/search", async (req, res) => {
   try {
-    const { query: queryText, top_k: topK } = req.body;
+    const { error, value } = searchSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    const { query: queryText, top_k: topK } = value;
 
     const openai_response = await axios.post(
       "https://api.openai.com/v1/embeddings",
@@ -94,12 +107,24 @@ app.post("/search", async (req, res) => {
   }
 });
 
+const getSummarySchema = Joi.object({
+  query: Joi.string().required(),
+  matches_metadata: Joi.array().items(Joi.object().required()).required(),
+  model: Joi.string().optional(),
+});
+
 app.post("/get-summary", async (req, res) => {
+  const { error, value } = getSummarySchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   const {
     query: query_text,
     matches_metadata: matches_metadata,
     model: model,
-  } = req.body;
+  } = value;
 
   //only send first 5 results to summarize
   const results_to_summarize = matches_metadata
@@ -121,8 +146,21 @@ app.post("/get-summary", async (req, res) => {
 //-----CHAT-----//
 let chat_history = [];
 
+const getContextSchema = Joi.object({
+  play_name: Joi.string().required(),
+  act_scene: Joi.string().required(),
+  dialogue_lines: Joi.string().required(),
+  model: Joi.string().optional(),
+});
+
 app.post("/get-context", async (req, res) => {
-  const { play_name, act_scene, dialogue_lines, model } = req.body;
+  const { error, value } = getContextSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  const { play_name, act_scene, dialogue_lines, model } = value;
 
   const context = `Consider Shakespear's "${play_name}":\n${act_scene}\n. 
                   In 120 words provide more context about the following dialogue in this scene: ${dialogue_lines}`;
@@ -138,9 +176,21 @@ app.post("/get-context", async (req, res) => {
   res.json(completion.data.choices[0].message);
 });
 
+const chatSchema = Joi.object({
+  role: Joi.string().valid("user", "assistant").required(),
+  content: Joi.string().required(),
+  model: Joi.string().optional(),
+});
+
 app.post("/chat", async (req, res) => {
+  const { error, value } = chatSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   // Add the most recent message
-  const { role, content, model } = req.body;
+  const { role, content, model } = value;
   chat_history.push({ role, content });
 
   const completion = await openai.createChatCompletion({
@@ -156,9 +206,22 @@ app.post("/reset-chat-history", (req, res) => {
   res.status(200).json({ message: "Chat history reset" });
 });
 
+const getLineContextSchema = Joi.object({
+  play_name: Joi.string().required(),
+  act_scene: Joi.string().required(),
+  dialogue_lines: Joi.string().required(),
+  selectedText: Joi.string().required(),
+  model: Joi.string().optional(),
+});
+
 app.post("/get-line-context", async (req, res) => {
-  const { play_name, act_scene, dialogue_lines, selectedText, model } =
-    req.body;
+  const { error, value } = getLineContextSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  const { play_name, act_scene, dialogue_lines, selectedText, model } = value;
 
   const prompt = `Consider the line "${selectedText}" from the play "${play_name}" by William Shakespeare. 
     This line is from ${act_scene}. The surrounding dialogue is as follows: ${dialogue_lines}. 

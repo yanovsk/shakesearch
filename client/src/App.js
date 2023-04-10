@@ -200,7 +200,12 @@ function App() {
               color="primary"
               style={{ width: 300 }}
             />
-            <Button onClick={handleSearch} color="primary" size="medium">
+            <Button
+              onClick={handleSearch}
+              color="primary"
+              size="medium"
+              disabled={searchQuery.length === 0}
+            >
               Search
             </Button>
           </div>
