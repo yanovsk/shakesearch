@@ -42,7 +42,7 @@ function GetContext({
     try {
       await axios.post(URL + "/reset-chat-history");
       setChatHistory([]);
-    } catch (err) {
+    } catch (error) {
       alert(error.response.data.error);
     }
   };
@@ -62,7 +62,7 @@ function GetContext({
         ...prevState,
         { message: response.data.content, sender: "Assistant" },
       ]);
-    } catch (err) {
+    } catch (error) {
       alert(error.response.data.error);
     }
     setLoading(false);
@@ -84,7 +84,7 @@ function GetContext({
         ...prevState,
         { message: response.data.content, sender: "Assistant" },
       ]);
-    } catch (err) {
+    } catch (error) {
       alert(error.response.data.error);
     }
     setLoading(false);
@@ -128,7 +128,7 @@ function GetContext({
         ...prevState,
         { message: chat_response.data.content, sender: "Assistant" },
       ]);
-    } catch (err) {
+    } catch (error) {
       alert(error.response.data.error);
     }
     setLoading(false);
