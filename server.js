@@ -3,6 +3,7 @@ const cors = require("cors");
 const axios = require("axios");
 const bodyParser = require("body-parser");
 const path = require("path");
+const rateLimit = require("express-rate-limit");
 
 const { Configuration, OpenAIApi } = require("openai");
 const { PineconeClient } = require("@pinecone-database/pinecone");
@@ -14,12 +15,6 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
-
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
 
@@ -28,7 +23,29 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 60, // Limit each IP to 60 requests per windowMs
+  message: {
+    status: 429, // HTTP status code for "Too Many Requests"
+    error: "Too many requests, please try again later.",
+  },
+});
+
+app.use("/search", apiLimiter);
+app.use("/get-summary", apiLimiter);
+app.use("/get-context", apiLimiter);
+app.use("/chat", apiLimiter);
+app.use("/reset-chat-history", apiLimiter);
+app.use("/get-line-context", apiLimiter);
+
 //-----SEARCH-----//
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const openai = new OpenAIApi(configuration);
+
 pinecone.init({
   apiKey: process.env.PINECONE_API_KEY,
   environment: "us-west4-gcp",

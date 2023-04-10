@@ -82,7 +82,7 @@ function App() {
       setResults(data);
       return data;
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
     }
   };
 
