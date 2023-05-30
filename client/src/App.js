@@ -192,7 +192,6 @@ function App() {
           </FormControl>
         </Box>
         <div className="search-wrapper">
-          <a href="https://shakesearch4.herokuapp.com">
             <img src={logo} alt="logo" className="logo" />
           </a>
           <div className="search-field">
@@ -251,7 +250,6 @@ function App() {
 
         {!isLoading && searchExecuted && (
           <div className="card-and-expl">
-            {/* Summary Card */}
             <div className="cards">
               <Card className="result-card summary-card">
                 <CardContent>
